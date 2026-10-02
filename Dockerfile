@@ -1,9 +1,9 @@
 # set base image (host OS)
-FROM python:3.8
+FROM python:3.8-buster
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-RUN apt-get -y update
+RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g; s|deb.debian.org/debian-security|archive.debian.org/debian-security|g; s|buster-updates|buster|g' /etc/apt/sources.list
+RUN apt-get -o Acquire::Check-Valid-Until=false -y update
 RUN apt-get install -y curl nano wget nginx git
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -21,7 +21,9 @@ RUN apt-get install -y mongodb-org
 RUN apt-get install -y yarn
 
 # Install PIP
-RUN easy_install pip
+# RUN easy_install pip
+
+# pip is already included in the Python base image
 
 
 ENV ENV_TYPE staging
